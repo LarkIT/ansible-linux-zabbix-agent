@@ -23,7 +23,7 @@
     group: root
     owner: root
     mode: '0644'
-  register: zabbix_configuration
+  notify: restart zabbix-agent
 
 - debug: 
     var: zabbix_configuration
@@ -35,7 +35,7 @@
       name: zabbix_run_sudo
       state: yes
       persistent: yes
-    register: se_bool_zabbix_run_sudo
+    notify: restart zabbix-agent
   - name: Open Zabbix Agent port in firewall 
     firewalld:
       port: 10050/tcp
@@ -72,22 +72,15 @@
       owner: root
       group: root
       mode: '0644'
-    register: zabbix_configuration
+    notify: restart zabbix-agent
   when: ansible_distribution_major_version == "6"
 
 - name: Change the zabbix_agent_t SELinux domain to permissive
   selinux_permissive:
     name: zabbix_agent_t
     permissive: true
-  register: selinux_permissive_zabbix_agent_t
+  notify: restart zabbix-agent
 - name: Enable zabbix-agent service
   service: 
     name: zabbix-agent
     enabled: true
-- name: Restart zabbix-agent service after changes
-  service:
-    name: zabbix-agent
-    state: restarted
-  when: selinux_permissive_zabbix_agent_t is changed or
-        se_bool_zabbix_run_sudo is changed or
-        zabbix_configuration is changed
