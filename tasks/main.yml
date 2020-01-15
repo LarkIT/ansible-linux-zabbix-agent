@@ -1,0 +1,86 @@
+# roles/zabbix-agent/tasks/main.yml
+# Install and configure Zabbix agent
+
+- name: Ensure that extra packages are installed
+  yum:
+    name: ['policycoreutils-python', 'firewalld', 'python-firewall']
+    state: installed
+
+
+- name: Install Zabbix repo CentOS 7
+  yum: 
+    name: https://repo.zabbix.com/zabbix/4.2/rhel/7/x86_64/zabbix-release-4.2-2.el7.noarch.rpm
+    state: installed
+  when: ansible_distribution_major_version == "7"
+- name: Install Zabbix agent
+  yum: 
+    name: zabbix-agent
+    state: installed
+- name: Create Zabbix agent configuration file 
+  template: 
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix-agentd.conf
+    group: root
+    owner: root
+    mode: '0644'
+
+- name: CentOS 7 Specific tasks
+  block:
+  - name: Enable zabbix_run_sudo SELinux boolean
+    seboolean:
+      name: zabbix_run_sudo
+      state: yes
+      persistent: yes
+    register: se_bool_zabbix_run_sudo
+  - name: Open Zabbix Agent port in firewall 
+    firewalld:
+      port: 10050/tcp
+      permanent: yes
+      state: enabled
+    register: firewall10050
+  - name: Reload firewall
+    command: firewall-cmd --reload
+    when: firewall10050 is changed
+    register: firewallcmdout
+  - debug: var=firewallcmdout
+  when: ansible_distribution_major_version == "7" 
+
+- name: CentOS 6 specific tasks
+  block: 
+  - name: Copy sudeoers config
+    copy: 
+      src: zabbix_sudoers_upstart
+      dest: /etc/sudoers.d/zabbix_sudoers_upstart
+      owner: root
+      group: root
+      mode: '0644'
+  - name: Copy zabbix_upstart_service_discovery.sh script
+    copy: 
+      src: zabbix_upstart_service_discovery.sh
+      dest: /usr/local/bin/zabbix_upstart_service_discovery.sh
+      owner: root
+      group: root
+      mode: '0755'
+  - name: Copy zabbix_upstart_services.conf Zabbix agent config file
+    copy:
+      src: zabbix_upstart_services.conf
+      dest: /etc/zabbix/zabbix_agentd.d/zabbix_upstart_services.conf
+      owner: root
+      group: root
+      mode: '0644'
+    register: zabbix_configuration
+  when: ansible_distribution_major_version == "6"
+
+- name: Change the zabbix_agent_t SELinux domain to permissive
+  selinux_permissive:
+    name: zabbix_agent_t
+    permissive: true
+  register: selinux_permissive_zabbix_agent_t
+- name: Restart zabbix-agent service after changes
+  service:
+    name: zabbix-agent
+    state: restarted
+  when: 
+    - selinux_permissive_zabbix_agent_t is changed 
+    - se_bool_zabbix_run_sudo is changed 
+    - zabbix_configuration is changed

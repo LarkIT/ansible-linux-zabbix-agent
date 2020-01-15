@@ -1,0 +1,4 @@
+# defaults/main.yml
+# Default variables
+
+zabbix_agent_server: localhost
