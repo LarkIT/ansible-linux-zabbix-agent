@@ -23,6 +23,7 @@
     group: root
     owner: root
     mode: '0644'
+  register: zabbix_configuration
 
 - name: CentOS 7 Specific tasks
   block:
