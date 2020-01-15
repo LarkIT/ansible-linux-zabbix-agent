@@ -80,6 +80,7 @@
   service:
     name: zabbix-agent
     state: restarted
+    enabled: true
   when: 
     - selinux_permissive_zabbix_agent_t is changed 
     - se_bool_zabbix_run_sudo is changed 
