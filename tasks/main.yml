@@ -76,11 +76,14 @@
     name: zabbix_agent_t
     permissive: true
   register: selinux_permissive_zabbix_agent_t
+- name: Enable zabbix-agent service
+  service: 
+    name: zabbix-agent
+    enabled: true
 - name: Restart zabbix-agent service after changes
   service:
     name: zabbix-agent
     state: restarted
-    enabled: yes
   when: 
     - selinux_permissive_zabbix_agent_t is changed 
     - se_bool_zabbix_run_sudo is changed 
