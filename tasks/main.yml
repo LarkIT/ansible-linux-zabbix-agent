@@ -25,9 +25,6 @@
     mode: '0644'
   notify: restart zabbix-agent
 
-- debug: 
-    var: zabbix_configuration
-
 - name: CentOS 7 Specific tasks
   block:
   - name: Enable zabbix_run_sudo SELinux boolean
