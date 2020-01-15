@@ -25,6 +25,9 @@
     mode: '0644'
   register: zabbix_configuration
 
+- debug: 
+    var: zabbix_configuration
+
 - name: CentOS 7 Specific tasks
   block:
   - name: Enable zabbix_run_sudo SELinux boolean
