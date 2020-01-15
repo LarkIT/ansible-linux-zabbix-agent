@@ -10,6 +10,8 @@
 # Default:
 # PidFile=/tmp/zabbix_agentd.pid
 
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+
 ### Option: LogType
 #	Specifies where log messages are written to:
 #		system  - syslog
@@ -37,6 +39,8 @@ LogFile=/var/log/zabbix/zabbix_agentd.log
 # Range: 0-1024
 # Default:
 # LogFileSize=1
+
+LogFileSize=0
 
 ### Option: DebugLevel
 #	Specifies debug level:
@@ -260,6 +264,8 @@ HostnameItem=system.hostname
 # Mandatory: no
 # Default:
 # Include=
+
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
 
 # Include=/usr/local/etc/zabbix_agentd.userparams.conf
 # Include=/usr/local/etc/zabbix_agentd.conf.d/
