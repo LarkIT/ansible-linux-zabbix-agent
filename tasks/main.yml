@@ -85,7 +85,6 @@
   service:
     name: zabbix-agent
     state: restarted
-  when: 
-    - selinux_permissive_zabbix_agent_t is changed 
-    - se_bool_zabbix_run_sudo is changed 
-    - zabbix_configuration is changed
+  when: selinux_permissive_zabbix_agent_t is changed or
+        se_bool_zabbix_run_sudo is changed or
+        zabbix_configuration is changed
