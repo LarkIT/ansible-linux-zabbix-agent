@@ -1,5 +1,5 @@
 # handlers/main.yml
-
+---
 - name: restart zabbix-agent
   service:
     name: zabbix-agent

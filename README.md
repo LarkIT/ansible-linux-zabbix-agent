@@ -1,5 +1,4 @@
 # Lark IT Ansible Zabbix Agent Role
-
 Install and configure Zabbix agent
 
 ## Operating Systems

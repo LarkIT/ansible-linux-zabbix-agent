@@ -1,6 +1,6 @@
 # roles/zabbix-agent/tasks/main.yml
 # Install and configure Zabbix agent
-
+---
 - name: Ensure that extra packages are installed
   yum:
     name: ['policycoreutils-python', 'firewalld', 'python-firewall']
