@@ -4,3 +4,6 @@
   service:
     name: zabbix-agent
     state: restarted
+
+- name: reload firewall
+    command: firewall-cmd --reload

@@ -1,21 +1,22 @@
 # roles/zabbix-agent/tasks/main.yml
 # Install and configure Zabbix agent
 ---
-- name: Ensure that extra packages are installed
+- name: Ensure policy that policycoreutils-python is installed
   yum:
     name: ['policycoreutils-python', 'firewalld', 'python-firewall']
     state: installed
-
 
 - name: Install Zabbix repo CentOS 7
   yum: 
     name: https://repo.zabbix.com/zabbix/4.2/rhel/7/x86_64/zabbix-release-4.2-2.el7.noarch.rpm
     state: installed
   when: ansible_distribution_major_version == "7"
+
 - name: Install Zabbix agent
   yum: 
     name: zabbix-agent
     state: installed
+
 - name: Create Zabbix agent configuration file 
   template: 
     src: zabbix_agentd.conf.j2
@@ -27,6 +28,13 @@
 
 - name: CentOS 7 Specific tasks
   block:
+  - name: Copy sudeoers config
+    copy: 
+      src: zabbix_sudoers_systemd
+      dest: /etc/sudoers.d/zabbix_sudoers_systemd
+      owner: root
+      group: root
+      mode: '0644'
   - name: Enable zabbix_run_sudo SELinux boolean
     seboolean:
       name: zabbix_run_sudo
@@ -38,12 +46,7 @@
       port: 10050/tcp
       permanent: yes
       state: enabled
-    register: firewall10050
-  - name: Reload firewall
-    command: firewall-cmd --reload
-    when: firewall10050 is changed
-    register: firewallcmdout
-  - debug: var=firewallcmdout
+    notify: reload firewall
   when: ansible_distribution_major_version == "7" 
 
 - name: CentOS 6 specific tasks
@@ -77,6 +80,7 @@
     name: zabbix_agent_t
     permissive: true
   notify: restart zabbix-agent
+
 - name: Enable zabbix-agent service
   service: 
     name: zabbix-agent
