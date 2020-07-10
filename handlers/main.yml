@@ -6,4 +6,4 @@
     state: restarted
 
 - name: reload firewall
-    command: firewall-cmd --reload
+  command: firewall-cmd --reload
