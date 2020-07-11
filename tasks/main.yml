@@ -35,6 +35,30 @@
       owner: root
       group: root
       mode: '0644'
+  - name: Copy Zabbix agent config file to add systemd service user parameters
+    copy: 
+      src: userparameter_systemd_services.conf
+      dest: /etc/zabbix/zabbix_agentd.d/userparameter_systemd_services.conf
+      owner: root
+      group: root
+      mode: '0644'
+    notify: restart zabbix-agent
+  - name: Copy Zabbix systemd service discovery script
+    copy: 
+      src: zabbix_systemd_service_discovery.sh
+      dest: /usr/local/bin/zabbix_systemd_service_discovery.sh
+      owner: root
+      group: root
+      mode: '0655'
+    notify: restart zabbix-agent
+  - name: Copy Zabbix systemd service restart check script
+    copy: 
+      src: zabbix_systemd_service_restart_check.sh
+      dest: /usr/local/bin/zabbix_systemd_service_restart_check.sh
+      owner: root
+      group: root
+      mode: '0655'
+    notify: restart zabbix-agent
   - name: Enable zabbix_run_sudo SELinux boolean
     seboolean:
       name: zabbix_run_sudo
@@ -58,14 +82,7 @@
       owner: root
       group: root
       mode: '0644'
-  - name: Copy zabbix_upstart_service_discovery.sh script
-    copy: 
-      src: zabbix_upstart_service_discovery.sh
-      dest: /usr/local/bin/zabbix_upstart_service_discovery.sh
-      owner: root
-      group: root
-      mode: '0755'
-  - name: Copy zabbix_upstart_services.conf Zabbix agent config file
+  - name: Copy Zabbix agent config file to add upstar service user parameters
     copy:
       src: zabbix_upstart_services.conf
       dest: /etc/zabbix/zabbix_agentd.d/zabbix_upstart_services.conf
@@ -73,6 +90,13 @@
       group: root
       mode: '0644'
     notify: restart zabbix-agent
+  - name: Copy Zabbix upstart service discovery script
+    copy: 
+      src: zabbix_upstart_service_discovery.sh
+      dest: /usr/local/bin/zabbix_upstart_service_discovery.sh
+      owner: root
+      group: root
+      mode: '0755'
   when: ansible_distribution_major_version == "6"
 
 - name: Change the zabbix_agent_t SELinux domain to permissive
