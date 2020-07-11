@@ -1,4 +1,4 @@
 Defaults:zabbix !requiretty
-zabbix  ALL=NOPASSWD: /usr/local/bin/zabbix_service_discovery.sh
-zabbix  ALL=NOPASSWD: /usr/local/bin/zabbix_service_restart_check.sh
+zabbix  ALL=NOPASSWD: /usr/local/bin/zabbix_systemd_service_discovery.sh
+zabbix  ALL=NOPASSWD: /usr/local/bin/zabbix_systemd_service_restart_check.sh
 zabbix  ALL=NOPASSWD: /bin/systemctl
