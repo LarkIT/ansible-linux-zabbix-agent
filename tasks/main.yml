@@ -82,7 +82,7 @@
       owner: root
       group: root
       mode: '0644'
-  - name: Copy Zabbix agent config file to add upstar service user parameters
+  - name: Copy Zabbix agent config file to add upstart service user parameters
     copy:
       src: zabbix_upstart_services.conf
       dest: /etc/zabbix/zabbix_agentd.d/zabbix_upstart_services.conf
