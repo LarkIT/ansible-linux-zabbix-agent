@@ -2,3 +2,4 @@
 # Default variables
 ---
 zabbix_agent_server: localhost
+zabbix_agent_solr_monitoring: false
