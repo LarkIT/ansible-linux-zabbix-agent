@@ -4,4 +4,4 @@
 
 service_list=$(chkconfig | grep 3:on | awk '{print $1}')
 
-echo -n '{"data":[';for s in ${service_list}; do echo -n "{\"{#SERVICE}\": \"$s\"},";done | sed -e 's:\},$:\}:';echo -n ']}'
+echo -n '{"data":[';for s in ${service_list}; do echo -n "{\"{#SERVICE}\": \"$s\"},";done | sed -e 's:\},$:\}:';echo -n ']}' | grep '{"data":'
