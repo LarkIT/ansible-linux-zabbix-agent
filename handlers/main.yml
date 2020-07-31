@@ -7,3 +7,10 @@
 
 - name: reload firewall
   command: firewall-cmd --reload
+  when: "'openvpn-as-yum' not in ansible_facts.packages"
+
+- name: restart openvpnas
+  service:
+    name: openvpnas
+    state: restarted
+  when: "'openvpn-as-yum' in ansible_facts.packages"

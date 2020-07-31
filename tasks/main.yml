@@ -1,6 +1,11 @@
-# roles/zabbix-agent/tasks/main.yml
+# tasks/main.yml
 # Install and configure Zabbix agent
 ---
+
+- name: Gather package facts
+  package_facts:
+    manager: auto
+
 - name: Ensure policy that policycoreutils-python is installed
   yum:
     name: ['policycoreutils-python', 'firewalld', 'python-firewall']
@@ -70,8 +75,10 @@
       port: 10050/tcp
       permanent: yes
       state: enabled
-    notify: reload firewall
-  when: ansible_distribution_major_version == "7" 
+    notify: 
+      - reload firewall
+      - restart openvpnas
+  when: ansible_distribution_major_version == "7"
 
 # Solr still uses an older upstart style init script. We can discover and monitor that service with the upstart configuration from CentOS 6.
 - name: Solr monitoring on CentOS 7
