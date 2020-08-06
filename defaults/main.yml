@@ -3,3 +3,4 @@
 ---
 zabbix_agent_server: localhost
 zabbix_agent_solr_monitoring: false
+zabbix_agent_manage_repo: true
